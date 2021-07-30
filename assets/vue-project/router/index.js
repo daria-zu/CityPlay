@@ -10,7 +10,7 @@ const routes = [
   },
   {
     path: '/',
-    component: () => import('../App.vue') 
+    component: () => import('../components/Main.vue') 
   },
   
 ]

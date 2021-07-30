@@ -1,18 +1,21 @@
 <template>
   <div>
-    <p>Тут будет карта</p>
-    <router-link to="/registration">Войти</router-link>
+    <vue-header></vue-header>
    
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import VueHeader from './components/VueHeader.vue';
 export default {
+  components: {VueHeader},
   name: "App",
 }
 </script>
 
-<style scoped>
-
+<style>
+  *{
+    margin: 0;
+  }
 </style>
