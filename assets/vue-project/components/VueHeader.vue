@@ -6,17 +6,18 @@
           CityPlay</router-link>
       </div>
       <div class="box">
+
            <router-link class="reg" to="/registration">
                 <i class="fa fa-user"></i>
            Войти/Регистрация</router-link>
       </div>
-    <router-view></router-view>
-  </div>
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>
 export default {
-  name: "VueHeader",
+    name: "VueHeader",
 }
 </script>
 
@@ -26,11 +27,9 @@ export default {
     }
     .box:hover .home{
         color: #ff9900;
-        /* font-weight: 700; */
     }
     .box:hover .reg{
         color: #ff9900;
-        /* font-weight: 700; */
     }
     .header{
         display: flex;
@@ -38,7 +37,7 @@ export default {
         background: #ff9900;
         height: 4rem;
         padding: 0 3rem;
-        width: 100vw;
+        /* width: 100vw; */
     }
     .home, .reg{
         margin: 0;

@@ -5,12 +5,16 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/map',
+    component: () => import('../components/Map.vue')
+  },
+  {
     path: '/registration',
     component: () => import('../components/Registration.vue')
   },
   {
     path: '/',
-    component: () => import('../components/Main.vue') 
+    component: () => import('../components/VueEnter.vue') 
   },
   
 ]

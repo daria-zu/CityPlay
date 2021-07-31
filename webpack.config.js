@@ -1,8 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
-// Manually configure the runtime environment if not already configured yet by the "encore" command.
-// It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
@@ -25,12 +22,7 @@ Encore
         config.corejs = 3;
     })
     .enableVueLoader()
-    .addPlugin(new VuetifyLoaderPlugin())
-    // enables Sass/SCSS support
-    .enableSassLoader(options => {
-        options.implementation = require('sass')
-        options.fiber = require('fibers')
-    })
+    .enableSassLoader()
 ;
 
 module.exports = Encore.getWebpackConfig();

@@ -1,4 +1,21 @@
 <template>
+<div>
+ <div class="header">
+       <div class="box">
+          <router-link to="/" class="home">
+                <i class="fa fa-home"></i>
+          CityPlay</router-link>
+      </div>
+      <div class="box">
+
+           <router-link class="reg" to="/registration">
+                <i class="fa fa-user"></i>
+           Войти/Регистрация</router-link>
+
+
+      </div>
+    </div>
+
     <div class="map">
         <l-map   
         :zoom="zoom"
@@ -16,8 +33,6 @@
            >
                 <l-icon>
                     <i class="fa fa-map-marker marker"></i>
-                    <!-- <i class="fa fa-map-pin marker"></i> -->
-                    <!-- <i class="fa fa-thumb-tack marker"></i> -->
                 </l-icon>
                 <!-- <l-tooltip>{{marker.description}}</l-tooltip> -->
                 <l-popup class="popup">
@@ -25,18 +40,18 @@
                     <p>{{marker.discription}}</p>
                 </l-popup>
             </l-marker>
-
         </l-map>
     </div>
+    <router-view></router-view>
+</div>
 </template>
 
 // <script>
 // import L from 'leaflet';
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LIcon} from 'vue2-leaflet';
-// import marker from '../../marker-icon.png';
 
 export default {
-  name: "Main",
+  name: "Map",
   components: {
     LMap,
     LTileLayer,
@@ -54,7 +69,7 @@ export default {
         // icon: L.icon({
         //     iconUrl: marker
         // }),
-        markerLatLng: [
+        markerLatLng: [,
             {index:1,
             possition: [59.942124, 30.284749],
             discription: "Точка1"},
@@ -63,8 +78,16 @@ export default {
             discription: "Точка2"
             }
         ] 
+
     }
   },
+
+   created() {
+    fetch('/map')
+      .then(response => response.json())
+      .then(json => this.markerLatLng = JSON.parse(json.playgrounds));
+      // console.log(this.markerLatLng);
+   },
 
    methods: {
     zoomUpdated (zoom) {
@@ -78,6 +101,19 @@ export default {
     },
     openPopUp (latLng) {
        this.$refs.features.mapObject.openPopup(latLng);
+    },
+
+    computed:{
+      getPossition(){
+        for(marker of this.markerLatLng){
+          let possitionXY = [];
+          marker.splice(marker.possitionY);
+          marker.splice(marker.possitionX);
+          marker.possition = possitionXY;
+        }
+        // console.log(this.markerLatLng)
+
+      }
     }
   }
 }
@@ -98,6 +134,33 @@ export default {
         padding: 10px;
         height: 200px;
         width: 160px;
+    }
+    .box:hover{
+        background-color: #fff;
+    }
+    .box:hover .home{
+        color: #ff9900;
+    }
+    .box:hover .reg{
+        color: #ff9900;
+    }
+    .header{
+        display: flex;
+        justify-content: space-between;
+        background: #ff9900;
+        height: 4rem;
+        padding: 0 3rem;
+    }
+    .home, .reg{
+        margin: 0;
+        padding: 2rem;
+        line-height: 4rem;
+        color: #fff;
+        font-size: 1.7rem;
+        text-decoration: none;
+    }
+    .reg{
+        font-size: 1.7rem;
     }
 
 </style>
