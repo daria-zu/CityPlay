@@ -5,6 +5,9 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 }
 
 Encore
+    .configureDevServerOptions(options => {
+        options.client = {}
+    })
     .setOutputPath('public/build/')
     .setPublicPath('/build')
     .addEntry('vue-project', './assets/vue-project/main.js')

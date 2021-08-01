@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
   .slogan{
     text-align: center;
@@ -22,7 +22,7 @@ export default {
     line-height: 100vh;
     color: #ff9900;
     cursor: pointer;
-    padding: 0 36%;
+    padding: 0 33%;
   }
 
 </style>

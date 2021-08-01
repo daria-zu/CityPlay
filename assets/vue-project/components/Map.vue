@@ -1,21 +1,21 @@
 <template>
 <div>
+
+  <vue-popup class="vue-popup" v-if="popupVisible" @closePopup="closePopup"/>
+
  <div class="header">
        <div class="box">
-          <router-link to="/" class="home">
+          <router-link to="/map" class="home">
                 <i class="fa fa-home"></i>
           CityPlay</router-link>
       </div>
       <div class="box">
 
-           <router-link class="reg" to="/registration">
+           <a class="reg" @click="showPopup">
                 <i class="fa fa-user"></i>
-           Войти/Регистрация</router-link>
-
-
+           Войти/Регистрация</a>
       </div>
     </div>
-
     <div class="map">
         <l-map   
         :zoom="zoom"
@@ -28,12 +28,13 @@
             <l-marker 
             v-for="marker in markerLatLng" 
             :key="marker.index"  
-            :lat-lng="marker.possition" 
-            @click="openPopUp(marker.possition)"
+            :lat-lng="[marker.possitionY,marker.possitionX]" 
+            @click="openPopUp(marker.possitionY,marker.possitionX)"
+            :icon="icon"
            >
-                <l-icon>
+                <!-- <l-icon>
                     <i class="fa fa-map-marker marker"></i>
-                </l-icon>
+                </l-icon> -->
                 <!-- <l-tooltip>{{marker.description}}</l-tooltip> -->
                 <l-popup class="popup">
                     <img src="#">
@@ -47,8 +48,10 @@
 </template>
 
 // <script>
-// import L from 'leaflet';
+import L from 'leaflet';
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LIcon} from 'vue2-leaflet';
+import marker from '../../marker-icon.png';
+import VuePopup from './VuePopup.vue';
 
 export default {
   name: "Map",
@@ -58,35 +61,27 @@ export default {
     LMarker,
     LPopup,
     LTooltip,
-    LIcon
+    LIcon,
+    VuePopup
   },
 
   data () {
     return {
         url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        zoom: 13,
-        center: [59.942124, 30.284749],
-        // icon: L.icon({
-        //     iconUrl: marker
-        // }),
-        markerLatLng: [,
-            {index:1,
-            possition: [59.942124, 30.284749],
-            discription: "Точка1"},
-            {index:2,
-            possition: [59.942459, 30.248302],
-            discription: "Точка2"
-            }
-        ] 
-
+        zoom: 14.5,
+        center: [59.926967, 30.296899],
+        icon: L.icon({
+            iconUrl: marker
+        }),
+        markerLatLng: [],
+        popupVisible: false,
     }
   },
 
    created() {
-    fetch('/map')
+    fetch('/maps')
       .then(response => response.json())
-      .then(json => this.markerLatLng = JSON.parse(json.playgrounds));
-      // console.log(this.markerLatLng);
+      .then(json => this.markerLatLng = json.playgrounds);
    },
 
    methods: {
@@ -102,33 +97,23 @@ export default {
     openPopUp (latLng) {
        this.$refs.features.mapObject.openPopup(latLng);
     },
-
-    computed:{
-      getPossition(){
-        for(marker of this.markerLatLng){
-          let possitionXY = [];
-          marker.splice(marker.possitionY);
-          marker.splice(marker.possitionX);
-          marker.possition = possitionXY;
-        }
-        // console.log(this.markerLatLng)
-
-      }
+    showPopup(){
+      this.popupVisible = true
+    },
+    closePopup(){
+      this.popupVisible = false
     }
-  }
+  },
+
 }
 </script>
 
 <style scoped>
     .map{
         height: 100vh;
+        position: relative;
+        z-index: 10;
     }
-
-    .marker{
-        font-size: 3rem;
-        color: #ff6a00;
-    }
-
     .popup{
         text-align: center;
         padding: 10px;
@@ -161,6 +146,20 @@ export default {
     }
     .reg{
         font-size: 1.7rem;
+        cursor: pointer;
+    }
+    .vue-popup{
+      background: #fffafa;
+      z-index: 100;
+      width: 360px;
+      height: 320px;
+      position: absolute;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      box-shadow: 0 0 10px 0 #e7e7e7;
     }
 
 </style>
