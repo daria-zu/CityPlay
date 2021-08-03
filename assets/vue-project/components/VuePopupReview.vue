@@ -71,9 +71,15 @@ export default {
             };
             fetch('/review', requestOptions)
             .then(response => response.json)
-            // .then(json => {
-
-            // })
+            .then(json => {
+                if (data.message === 'error') {
+                document.getElementById('text_error')
+                    .innerText = 'В данный момент добавление отзывов не осуществляется.';
+                } else if (data.message === 'success') {
+                    document.getElementById('text_success')
+                        .innerText = 'Отзыв добавлен!';
+                } 
+            })
         }
     }
 }

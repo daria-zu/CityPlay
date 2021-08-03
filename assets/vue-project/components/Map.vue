@@ -52,7 +52,6 @@
                       <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/>
                     </div>
                 </l-popup>
-                <!-- <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/> -->
             </l-marker>
         </l-map>
     </div>
