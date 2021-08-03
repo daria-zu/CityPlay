@@ -32,14 +32,27 @@
             @click="openPopUp(marker.possitionY,marker.possitionX)"
             :icon="icon"
            >
-                <!-- <l-icon>
-                    <i class="fa fa-map-marker marker"></i>
-                </l-icon> -->
-                <!-- <l-tooltip>{{marker.description}}</l-tooltip> -->
                 <l-popup class="popup">
-                    <img src="#">
-                    <p>{{marker.discription}}</p>
+                    <!-- <p>{{marker.id}}</p> -->
+                    <div v-if="marker.image">
+                      <!-- <a @click="showPopupImage"> -->
+                        <img class="img-playground" :src="require('../../../public/images/' + marker.image)">
+                      <!-- </a>
+                      <vue-popup-image class="vue-popup-image" :marker_data="marker.image" v-if="popupImageVisible"/> -->
+                    </div>
+                    <!-- <div v-else>
+                      <img class="img-playground" src="../../../public/images/default-image.png">
+                    </div> -->
+                    <div class="rating">
+
+                    </div>
+                    <div class="review">
+                      <a>Отзывы</a>
+                      <a @click="showPopupReview">Оставить отзыв</a>
+                      <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/>
+                    </div>
                 </l-popup>
+                <!-- <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/> -->
             </l-marker>
         </l-map>
     </div>
@@ -52,6 +65,8 @@ import L from 'leaflet';
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LIcon} from 'vue2-leaflet';
 import marker from '../../marker-icon.png';
 import VuePopup from './VuePopup.vue';
+import VuePopupImage from './VuePopupImage.vue';
+import VuePopupReview from './VuePopupReview.vue';
 
 export default {
   name: "Map",
@@ -60,9 +75,10 @@ export default {
     LTileLayer,
     LMarker,
     LPopup,
-    LTooltip,
     LIcon,
-    VuePopup
+    VuePopup,
+    VuePopupImage,
+    VuePopupReview
   },
 
   data () {
@@ -75,6 +91,8 @@ export default {
         }),
         markerLatLng: [],
         popupVisible: false,
+        popupImageVisible: false,
+        popupReviewVisible: false,
     }
   },
 
@@ -102,6 +120,18 @@ export default {
     },
     closePopup(){
       this.popupVisible = false
+    },
+    showPopupImage(){
+      this.popupImageVisible = true
+    },
+    closePopupImage(){
+      this.popupImageVisible = false
+    },
+    showPopupReview(){
+      this.popupReviewVisible = true
+    },
+    closePopupReview(){
+      this.popupReviewVisible = false
     }
   },
 
@@ -117,8 +147,11 @@ export default {
     .popup{
         text-align: center;
         padding: 10px;
-        height: 200px;
-        width: 160px;
+        height: 220px;
+        width: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .box:hover{
         background-color: #fff;
@@ -161,5 +194,43 @@ export default {
       left: 0;
       box-shadow: 0 0 10px 0 #e7e7e7;
     }
-
+    .img-playground{
+      width: 100%;
+    }
+    .vue-popup-image{
+      background: #fffafa;
+      z-index: 100;
+      position: absolute;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      box-shadow: 0 0 10px 0 #e7e7e7;
+    }
+    .review{
+      display: flex;
+      justify-content: space-between;
+    }
+    .review a{
+      display: inline-block;
+      text-decoration: none;
+      color: #ff9900;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .vue-popup-review{
+      background: #fffafa;
+      z-index: 100;
+      height: 380px;
+      width: 430px;
+      position: absolute;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      box-shadow: 0 0 10px 0 #e7e7e7;
+      padding-left: 20px;
+    }
 </style>

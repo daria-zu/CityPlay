@@ -31,7 +31,7 @@ class Controller extends AbstractController
         return $this->render('project.html.twig');
     }
 
-    #[Route('/maps', name: 'form-auth', methods: ['POST'])]
+    #[Route('/auth', name: 'form-auth', methods: ['POST'])]
     public function getAuth(Request $request, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $registrationData = $request->request;

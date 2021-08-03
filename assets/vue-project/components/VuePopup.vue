@@ -37,8 +37,8 @@ export default {
                 method: 'POST',
                 body: data
             };
-            console.log(data);
-            fetch('/maps', requestOptions)
+            // console.log(data);
+            fetch('/auth', requestOptions)
             .then(response => response.json())
             .then(data => {
                 if (data.message === 'error') {

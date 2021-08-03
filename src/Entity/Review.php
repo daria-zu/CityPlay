@@ -43,7 +43,7 @@ class Review
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $score;
+    private $rating;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -107,14 +107,14 @@ class Review
         return $this;
     }
 
-    public function getScore(): ?int
+    public function getRating(): ?int
     {
-        return $this->score;
+        return $this->rating;
     }
 
-    public function setScore(?int $score): self
+    public function setRating(?int $rating): self
     {
-        $this->score = $score;
+        $this->rating = $rating;
 
         return $this;
     }

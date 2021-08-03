@@ -41,6 +41,11 @@ class Playground
     private $image;
 
     /**
+     * @ORM\Column(type="float")
+     */
+    private $rating;
+
+    /**
      * @ORM\OneToMany(targetEntity=Review::class, mappedBy="playground")
      */
     private $reviews;
@@ -48,6 +53,7 @@ class Playground
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->image = 'default-image.png';
     }
 
     public function getId(): ?int
@@ -99,6 +105,18 @@ class Playground
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getRating(): ?float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(float $rating): self
+    {
+        $this->rating = prating;
 
         return $this;
     }
