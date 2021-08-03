@@ -4,7 +4,6 @@
         <i class="fa fa-times close_popup" @click="closePopupReview" style="text-align: right"></i>
     </div>
     <div>
-       <!-- <p>{{index_data}}</p> -->
        <div class="form-box">
         <form name="form-review" @submit.prevent="sendReview" enctype="multipart/form-data">
             <div class="box">
@@ -33,7 +32,7 @@
                 <span class="text" for="text">Загрузите фото</span>
                 <input in="text" type="file" name="photo">
             </div>
-            <input class="unshow"  type="text" name="playground" :value="index_data">
+            <input class="unshow"  type="text" name="playground_id" :value="index_data">
             <div class="btn_box">
                 <input class="button-form" type="submit" value="Отправить"> 
                  
@@ -47,11 +46,10 @@
 </template>
 
 <script>
-// import StarRating from 'vue-star-rating';
 
 export default {
     name: 'VuePopupReview',
-    // components: {StarRating},
+
     props: {
         index_data:{
             type: Number,
@@ -66,19 +64,19 @@ export default {
         sendReview(){
             const data = new FormData(document.forms['form-review']);
             const requestOptions = {
-                methods: 'POST',
+                method: 'POST',
                 body: data
             };
-            fetch('/review', requestOptions)
-            .then(response => response.json)
-            .then(json => {
-                if (data.message === 'error') {
-                document.getElementById('text_error')
-                    .innerText = 'В данный момент добавление отзывов не осуществляется.';
-                } else if (data.message === 'success') {
+            fetch('/add_review', requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === 'success') {
                     document.getElementById('text_success')
                         .innerText = 'Отзыв добавлен!';
-                } 
+                } else {
+                    document.getElementById('text_error')
+                    .innerText = 'В данный момент добавление отзывов не осуществляется.';
+                }
             })
         }
     }

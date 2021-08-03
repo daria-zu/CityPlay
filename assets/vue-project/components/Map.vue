@@ -3,6 +3,8 @@
 
   <vue-popup class="vue-popup" v-if="popupVisible" @closePopup="closePopup"/>
 
+  <!-- <vue-popup-review class="vue-popup-review"  v-if="popupReviewVisible" @closePopupReview="closePopupReview"/> -->
+
  <div class="header">
        <div class="box">
           <router-link to="/map" class="home">
@@ -32,25 +34,44 @@
             @click="openPopUp(marker.possitionY,marker.possitionX)"
             :icon="icon"
            >
-                <l-popup class="popup">
-                    <!-- <p>{{marker.id}}</p> -->
+                <l-popup>
+                  <div class="popup">
+                     <!-- <p>{{marker.id}}</p> -->
+
                     <div v-if="marker.image">
                       <!-- <a @click="showPopupImage"> -->
                         <img class="img-playground" :src="require('../../../public/images/' + marker.image)">
-                      <!-- </a>
-                      <vue-popup-image class="vue-popup-image" :marker_data="marker.image" v-if="popupImageVisible"/> -->
+                      <!-- </a> -->
+                      <!-- <vue-popup-image class="vue-popup-image" :marker_data="marker.image" v-if="popupImageVisible" @closePopupImage="closePopupImage"/> -->
                     </div>
-                    <!-- <div v-else>
-                      <img class="img-playground" src="../../../public/images/default-image.png">
-                    </div> -->
-                    <div class="rating">
+                    <div v-else>
+                      <!-- <img class="img-playground" :src="require('../../../public/' + default)"> -->
+                    </div>
 
+                    <div class="rating">
+                      <star-rating class="stars" :increment="0.01" :fixed-points="2" :read-only="true" :star-size="20" :rating="rating"></star-rating>
                     </div>
-                    <div class="review">
-                      <a>Отзывы</a>
-                      <a @click="showPopupReview">Оставить отзыв</a>
-                      <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/>
+
+                    <div class="review separator">
+                      <h2>Отзывы</h2>
+
+                      <!-- TODO написать v-if-->
+                      <div class="reviews">
+                        <div v-if="marker.reviews">
+                          
+                        </div>
+                        <div v-else>
+                          <p>Здесь пока нет ни одного отзыва</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <a @click="showPopupReview" class="review-href">Оставить отзыв</a>
+                        <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/>
+                      </div>
+                
                     </div>
+                  </div>
                 </l-popup>
             </l-marker>
         </l-map>
@@ -66,6 +87,7 @@ import marker from '../../marker-icon.png';
 import VuePopup from './VuePopup.vue';
 import VuePopupImage from './VuePopupImage.vue';
 import VuePopupReview from './VuePopupReview.vue';
+import StarRating from 'vue-star-rating';
 
 export default {
   name: "Map",
@@ -77,7 +99,8 @@ export default {
     LIcon,
     VuePopup,
     VuePopupImage,
-    VuePopupReview
+    VuePopupReview,
+    StarRating,
   },
 
   data () {
@@ -92,6 +115,8 @@ export default {
         popupVisible: false,
         popupImageVisible: false,
         popupReviewVisible: false,
+        rating: 0,
+        default: 'default-image.png',
     }
   },
 
@@ -145,12 +170,9 @@ export default {
     }
     .popup{
         text-align: center;
-        padding: 10px;
-        height: 220px;
-        width: 180px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        padding: 10px 20px 10px 0;
+        height: 420px;
+        width: 300px;
     }
     .box:hover{
         background-color: #fff;
@@ -195,9 +217,12 @@ export default {
     }
     .img-playground{
       width: 100%;
+      padding-right: 10px;
+      height: 230px;
     }
     .vue-popup-image{
       background: #fffafa;
+      width: 800px;
       z-index: 100;
       position: absolute;
       margin: auto;
@@ -207,22 +232,41 @@ export default {
       left: 0;
       box-shadow: 0 0 10px 0 #e7e7e7;
     }
-    .review{
-      display: flex;
-      justify-content: space-between;
+    .rating{
+      padding: 5px 0 0 0;
     }
-    .review a{
+    .separator::before{
+      content: "";
       display: inline-block;
+      width: 140px;  
+      height: 2px;
+      background-color: #ff9900
+    }
+    .reviews{
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      overflow-y: auto;
+    }
+    .review-href{
+      text-align: center;
       text-decoration: none;
       color: #ff9900;
       cursor: pointer;
+      margin-top: 20px;
+      text-align: right;
       font-size: 0.8rem;
     }
-    .vue-popup-review{
+    h2{
+      margin-bottom: 10px;
+      color: #1c1c1c;
+    }
+     .vue-popup-review{
       background: #fffafa;
       z-index: 100;
-      height: 380px;
-      width: 430px;
+      height: 390px;
+      width: 440px;
       position: absolute;
       margin: auto;
       top: 0;
