@@ -13,6 +13,10 @@
                 <input type="password" placeholder="Ведите пароль" name="password" v-model.trim="password">
             </div>
             <div>
+                <input type="hidden" name="auth">
+            </div>
+            <div>
+                
                  <input class="button-form" type="submit" value="Войти">
 
                 <p id="text_error"></p>
@@ -43,8 +47,8 @@ export default {
             .then(data => {
                 if (data.message === 'error') {
                 document.getElementById('text_error')
-                    .innerText = 'Ошибка регистрации. Пользователь с таким логином уже зарегистрирован.';
-                } else if (data.message === 'success_reg') {
+                    .innerText = 'Ошибка регистрации.';
+                } else {
                     document.getElementById('text_success')
                         .innerText = 'Авторизация прошла успешно!';
                 } 

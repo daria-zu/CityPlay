@@ -31,32 +31,39 @@ class Controller extends AbstractController
         return $this->render('project.html.twig');
     }
 
-    #[Route('/auth', name: 'form-auth', methods: ['POST'])]
-    public function getAuth(Request $request, UserPasswordHasherInterface $passwordEncoder): Response
+    #[Route('/auth', name: 'login', methods: ['POST'])]
+    public function getAuth(): Response
     {
-        $registrationData = $request->request;
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $userRepository = $entityManager->getRepository(User::class);
-        $user = $userRepository->findOneBy(['login' => $registrationData->get('login')]);
-        if ($user) {
-            return $this->json([
-                'message' => 'error',
-            ]);
-        }
-
-        $user = new User();
-        $user->setLogin($registrationData->get('login'));
-        $hash = $passwordEncoder->hashPassword($user, $registrationData->get('password'));
-        $user->setHash($hash);
-
-        $user->setRoles(['ROLE_USER']);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
+        $user = this->getUser();
         return $this->json([
-            'message' => 'success_reg',
+            'username' => $user->getUserLogin(),
+            'roles' => $user->getRoles()
         ]);
     }
+
+        // $registrationData = $request->request;
+
+        // $entityManager = $this->getDoctrine()->getManager();
+        // $userRepository = $entityManager->getRepository(User::class);
+        // $user = $userRepository->findOneBy(['login' => $registrationData->get('login')]);
+        // if ($user) {
+        //     return $this->json([
+        //         'message' => 'error',
+        //     ]);
+        // }
+
+        // $user = new User();
+        // $user->setLogin($registrationData->get('login'));
+        // $hash = $passwordEncoder->hashPassword($user, $registrationData->get('password'));
+        // $user->setHash($hash);
+
+        // $user->setRoles(['ROLE_USER']);
+
+        // $em = $this->getDoctrine()->getManager();
+        // $em->persist($user);
+        // $em->flush();
+        // return $this->json([
+        //     'message' => 'success_reg',
+        // ]);
+    // }
 }

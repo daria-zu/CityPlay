@@ -117,6 +117,7 @@ export default {
         popupReviewVisible: false,
         rating: 0,
         default: 'default-image.png',
+        reviewlist: [],
     }
   },
 
@@ -138,12 +139,16 @@ export default {
     },
     openPopUp (latLng) {
        this.$refs.features.mapObject.openPopup(latLng);
+      //  fetch('/reviewlist')
+      //  .then(response => response.json())
+      //  .then(json => this.reviewlist = json.reviews);
     },
     showPopup(){
-      this.popupVisible = true
+      this.popupVisible = true;
     },
     closePopup(){
       this.popupVisible = false
+      // this.reviewlist = [];
     },
     showPopupImage(){
       this.popupImageVisible = true

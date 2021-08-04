@@ -1,31 +1,37 @@
 security:
-    # https://symfony.com/doc/current/security/experimental_authenticators.html
     enable_authenticator_manager: true
 
-#   отвечает за хеширование паролей
+    #   класс пользователя, авторизация происходит по значению свойства login
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: login
+
+    #   отвечает за хеширование паролей
     password_hashers:
         App\Entity\User:
             algorithm: auto
 
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    providers:
-        users_in_memory: { memory: null }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            lazy: true
-            provider: users_in_memory
+            # выход из личного кабинета доступен по ссылке /logout
+            logout:
+                path: logout
+            # класс, отвечающий за авторизацию
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
+            custom_authenticators:
+                 - App\Security\Authenticator
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            # check_path: /auth - куда уходит аякс запрос
+            json_login:
+                check_path: /auth
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+
+    #  если для выполнения запросы нужна авторизация,
+    #  перенаправление будет осуществляться по ссылке, указанной в getLoginUrl
+    # класса App\Security\Authenticator
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
