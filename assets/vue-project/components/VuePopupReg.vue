@@ -1,11 +1,11 @@
 <template>
   <div class="popup-box">
     <div class="close_btn">
-        <i class="fa fa-times close_popup" @click="closePopup" style="text-align: right"></i>
+        <i class="fa fa-times close_popup" @click="closePopupReg" style="text-align: right"></i>
     </div>
     <div class="form-box">
-        <form name="form-auth" @submit.prevent="sendData" class="auth-form">
-            <h2>Авторизация</h2>
+        <form name="form-reg" @submit.prevent="sendData" class="auth-form">
+            <h2>Регистрация</h2>
              <div class="box">
                 <input type="text" placeholder="Ведите имя" name="login" v-model.trim="login">
             </div>
@@ -13,11 +13,11 @@
                 <input type="password" placeholder="Ведите пароль" name="password" v-model.trim="password">
             </div>
             <div>
-                <input type="hidden" name="auth">
+                <!-- <input type="hidden" name="auth"> -->
             </div>
             <div>
                 
-                 <input class="button-form" type="submit" value="Войти">
+                 <input class="button-form" type="submit" value="Зарегистрироваться">
 
                 <p id="text_error"></p>
                 <p id="text_success"></p>
@@ -29,39 +29,39 @@
 
 <script>
 export default {
-    name: 'VuePopup',
+    name: 'VuePopupReg',
     data () {
         return{
             authorization: false,
         }
     },
     methods:{
-        closePopup(){
-            this.$emit('closePopup')
+        closePopupReg(){
+            this.$emit('closePopupReg')
         },
         sendData(){
-            const data = new FormData(document.forms['form-auth']);
+            const data = new FormData(document.forms['form-reg']);
             const requestOptions = {
                 method: 'POST',
                 body: data
             };
             // console.log(data);
-            fetch('/auth', requestOptions)
+            fetch('/reg', requestOptions)
             .then(response => response.json())
             .then(data => {
                 if (data.message === 'error') {
                 document.getElementById('text_error')
-                    .innerText = 'Ошибка регистрации.';
-                } else {
+                    .innerText = 'Пользователь с таким логином уже существует.';
+                } else if (data.message === 'success'){
                     document.getElementById('text_success')
-                        .innerText = 'Авторизация прошла успешно!';
-                    this.authorization = true;
+                        .innerText = 'Регистрация прошла успешно!';
+                    // this.authorization = true;
                 } 
             })
         },
-        sendAuth(){
-            this.$emit(this.authorization)
-        }
+        // sendAuth(){
+        //     this.$emit(this.authorization)
+        // }
     }
 }
 </script>
@@ -96,13 +96,13 @@ export default {
         margin-bottom: 16px;
    }
    .button-form{
-      width: 50%;
+      width: 70%;
       margin: 0 25%;
       border: 2px solid rgb(29, 28, 28);
       border-radius: 3px;
       height: 40px;
       background-color: #454e54;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 600;
       color: #ededed;
       cursor: pointer;

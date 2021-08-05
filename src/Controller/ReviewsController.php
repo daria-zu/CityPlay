@@ -46,13 +46,17 @@ class ReviewsController extends AbstractController
     }
 
 
-    // #[Route('/reviewlist', name: 'get_review_list')]
-    // public function getReviewList(): Response
-    // {
-    //     $entityManager = $this->getDoctrine()->getManager();
-    //     $playgrounds = $entityManager->getRepository(Playground::class)->findAll();
-    //     return $this->json([
-    //         'reviews' => $playgrounds.reviews,
-    //     ]);
-    // }
+    #[Route('/reviewlist', name: 'get_review_list', methods: ['POST'])]
+    public function getReviewList(Request $request): Response
+    {
+        $data = $request->request;
+        $index = $data->get('index');
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $reviewRepository = $entityManager->getRepository(Review::class);
+        $reviewslist = $reviewRepository->getReviewByIdPlay($index);
+        return $this->json([
+            'reviews' => $reviewslist,
+        ]);
+    }
 }

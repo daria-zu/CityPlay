@@ -37,7 +37,6 @@ export default {
         background: #ff9900;
         height: 4rem;
         padding: 0 3rem;
-        /* width: 100vw; */
     }
     .home, .reg{
         margin: 0;

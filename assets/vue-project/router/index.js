@@ -7,12 +7,6 @@ const routes = [
   {
     path: '/map',
     component: () => import('../components/Map.vue'),
-    // children:[
-    //   {
-    //     path: 'registration',
-    //     component: () => import('../components/Registration.vue')
-    //   },
-    // ]
   },
   {
     path: '/',

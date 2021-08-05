@@ -47,4 +47,14 @@ class ReviewRepository extends ServiceEntityRepository
         ;
     }
     */
+
+   
+    public function getReviewByIdPlay($index){
+
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.playground = :id')
+            ->setParameter('id', $index)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -1,8 +1,9 @@
 <template>
 <div>
 
-  <vue-popup class="vue-popup" v-if="popupVisible" @closePopup="closePopup"/>
-
+  <vue-popup class="vue-popup" v-if="popupVisible" @closePopup="closePopup" @sendAuth="getAuthMessage"/>
+  
+  <vue-popup-reg class="vue-popup" v-if="popupRegVisible" @closePopupReg="closePopupReg"/>
   <!-- <vue-popup-review class="vue-popup-review"  v-if="popupReviewVisible" @closePopupReview="closePopupReview"/> -->
 
  <div class="header">
@@ -15,7 +16,10 @@
 
            <a class="reg" @click="showPopup">
                 <i class="fa fa-user"></i>
-           Войти/Регистрация</a>
+           Войти
+           </a>
+           <a class="reg" @click="showPopupReg">Регистрация</a>
+           <a class="reg" @click="logout">Выйти</a>
       </div>
     </div>
     <div class="map">
@@ -32,11 +36,16 @@
             :key="marker.index"  
             :lat-lng="[marker.possitionY,marker.possitionX]" 
             @click="openPopUp(marker.possitionY,marker.possitionX)"
+            
             :icon="icon"
-           >
+            >
                 <l-popup>
                   <div class="popup">
                      <!-- <p>{{marker.id}}</p> -->
+                     <!-- <form name="getindex" class="unshow">
+                        <input type="text" :value="marker.id" name="index" id="index">
+                     </form> -->
+                     
 
                     <div v-if="marker.image">
                       <!-- <a @click="showPopupImage"> -->
@@ -55,10 +64,12 @@
                     <div class="review separator">
                       <h2>Отзывы</h2>
 
-                      <!-- TODO написать v-if-->
                       <div class="reviews">
-                        <div v-if="marker.reviews">
-                          
+                        <a @click.prevent="getReviews(marker.id)">Читать</a>
+                        <div v-if="reviewlist.length">
+                          <div v-for="review in reviewlist" :key="review.index">
+                            <p>{{review.text}}</p>
+                          </div>
                         </div>
                         <div v-else>
                           <p>Здесь пока нет ни одного отзыва</p>
@@ -80,11 +91,12 @@
 </div>
 </template>
 
-// <script>
+<script>
 import L from 'leaflet';
-import { LMap, LTileLayer, LMarker, LPopup, LTooltip, LIcon} from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LIcon} from 'vue2-leaflet';
 import marker from '../../marker-icon.png';
 import VuePopup from './VuePopup.vue';
+import VuePopupReg from './VuePopupReg.vue';
 import VuePopupImage from './VuePopupImage.vue';
 import VuePopupReview from './VuePopupReview.vue';
 import StarRating from 'vue-star-rating';
@@ -101,6 +113,7 @@ export default {
     VuePopupImage,
     VuePopupReview,
     StarRating,
+    VuePopupReg
   },
 
   data () {
@@ -113,18 +126,26 @@ export default {
         }),
         markerLatLng: [],
         popupVisible: false,
+        popupRegVisible: false,
         popupImageVisible: false,
         popupReviewVisible: false,
         rating: 0,
-        default: 'default-image.png',
         reviewlist: [],
+        authorization: false,
     }
   },
 
    created() {
     fetch('/maps')
       .then(response => response.json())
-      .then(json => this.markerLatLng = json.playgrounds);
+      .then(json => this.markerLatLng = JSON.parse(json.playgrounds));
+    
+    // setInterval(async () => {
+    //   const f = await fetch('/checkauth');
+    //   const data = await f.json();
+    //   console.log(data);
+    //   authorization = data.message;
+    // }, 10000);
    },
 
    methods: {
@@ -139,16 +160,18 @@ export default {
     },
     openPopUp (latLng) {
        this.$refs.features.mapObject.openPopup(latLng);
-      //  fetch('/reviewlist')
-      //  .then(response => response.json())
-      //  .then(json => this.reviewlist = json.reviews);
     },
     showPopup(){
       this.popupVisible = true;
     },
     closePopup(){
       this.popupVisible = false
-      // this.reviewlist = [];
+    },
+    showPopupReg(){
+      this.popupRegVisible = true;
+    },
+    closePopupReg(){
+      this.popupRegVisible = false
     },
     showPopupImage(){
       this.popupImageVisible = true
@@ -161,6 +184,26 @@ export default {
     },
     closePopupReview(){
       this.popupReviewVisible = false
+    },
+    getReviews(id){
+      console.log(id);
+      console.log('ok');
+       const data = {'index': id};
+       console.log(data);
+       const requestOptions = {
+                method: 'POST',
+                body: JSON.stringify(data)
+            };
+       fetch('/reviewlist', requestOptions)
+       .then(response => response.json())
+       .then(json => this.reviewlist = json.reviews);
+    },
+    getAuthMessage(){
+      this.authorization = true;
+      console.log('auth_true');
+    },
+    logout(){
+      fetch('/logout')
     }
   },
 
@@ -280,5 +323,8 @@ export default {
       left: 0;
       box-shadow: 0 0 10px 0 #e7e7e7;
       padding-left: 20px;
+    }
+    .unshow{
+      display: none;
     }
 </style>

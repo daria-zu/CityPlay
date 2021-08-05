@@ -1,6 +1,6 @@
 <template>
   <div>
-      <router-link class="slogan" to="/map">CityPlay</router-link>
+    <router-link class="slogan" to="/map">CityPlay</router-link>
     <router-view></router-view>
   </div>
 </template>
