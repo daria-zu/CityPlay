@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,14 +41,11 @@ class Authenticator extends AbstractAuthenticator
         return null;
     }
 
-    // если передается auth, значит будет вызван метод authenticate по проверке логина и пароля
-    // и создании пользовательской сессии
     public function supports(Request $request): ?bool
     {
         return  $request->request->has('auth');
     }
 
-    // если пользователь не прошел авторизацию
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         return new JsonResponse(['message' => 'error'], Response::HTTP_UNAUTHORIZED);

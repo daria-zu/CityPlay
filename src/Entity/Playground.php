@@ -53,7 +53,6 @@ class Playground
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
-        $this->image = 'default-image.png';
     }
 
     public function getId(): ?int
@@ -116,7 +115,7 @@ class Playground
 
     public function setRating(float $rating): self
     {
-        $this->rating = prating;
+        $this->rating = $rating;
 
         return $this;
     }

@@ -13,12 +13,7 @@
                 <input type="password" placeholder="Ведите пароль" name="password" v-model.trim="password">
             </div>
             <div>
-                <!-- <input type="hidden" name="auth"> -->
-            </div>
-            <div>
-                
                  <input class="button-form" type="submit" value="Зарегистрироваться">
-
                 <p id="text_error"></p>
                 <p id="text_success"></p>
             </div>
@@ -39,13 +34,13 @@ export default {
         closePopupReg(){
             this.$emit('closePopupReg')
         },
+
         sendData(){
             const data = new FormData(document.forms['form-reg']);
             const requestOptions = {
                 method: 'POST',
                 body: data
             };
-            // console.log(data);
             fetch('/reg', requestOptions)
             .then(response => response.json())
             .then(data => {
@@ -55,13 +50,9 @@ export default {
                 } else if (data.message === 'success'){
                     document.getElementById('text_success')
                         .innerText = 'Регистрация прошла успешно!';
-                    // this.authorization = true;
                 } 
             })
         },
-        // sendAuth(){
-        //     this.$emit(this.authorization)
-        // }
     }
 }
 </script>
@@ -90,7 +81,6 @@ export default {
         border: 1px solid #454e54;;
         border-radius: 5px;
         background-color: #fff;
-        /* padding-left: 25px; */
         height: 40px;
         width: 100%;
         margin-bottom: 16px;

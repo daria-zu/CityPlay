@@ -37,15 +37,16 @@ export default {
     },
     methods:{
         closePopup(){
-            this.$emit('closePopup')
+            this.$emit('closePopup');
+            this.$emit(this.authorization);
         },
+        
         sendData(){
             const data = new FormData(document.forms['form-auth']);
             const requestOptions = {
                 method: 'POST',
                 body: data
             };
-            // console.log(data);
             fetch('/auth', requestOptions)
             .then(response => response.json())
             .then(data => {
@@ -59,9 +60,6 @@ export default {
                 } 
             })
         },
-        sendAuth(){
-            this.$emit(this.authorization)
-        }
     }
 }
 </script>

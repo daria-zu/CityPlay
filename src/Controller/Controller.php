@@ -36,14 +36,10 @@ class Controller extends AbstractController
         ]);
 
         return $this->json(['playgrounds' => $jsonObject]);
-
-        // return $this->json([
-        //     'playgrounds' => $playgrounds,
-        // ]);
     }
 
     #[Route('/', name: 'index')]
-    #[Route('/{page}', name: 'vue_pages', requirements: ['page' => '^.+'], methods: ['GET'])]
+    #[Route('/map', name: 'vue_pages', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('project.html.twig');
@@ -70,7 +66,7 @@ class Controller extends AbstractController
     #[Route('/logout', name: 'logout')]
     public function logout(): void
     {
-        // метод реализован в firewall
+     
     }
 
     #[Route('/reg', name: 'reg', methods: ['POST'])]
@@ -98,7 +94,7 @@ class Controller extends AbstractController
         $em->persist($user);
         $em->flush();
         return $this->json([
-            'message' => 'success_reg',
+            'message' => 'success',
         ]);
     }
 }

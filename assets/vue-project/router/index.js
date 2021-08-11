@@ -12,7 +12,6 @@ const routes = [
     path: '/',
     component: () => import('../components/VueEnter.vue') 
   },
-  
 ]
 
 const router = new VueRouter({

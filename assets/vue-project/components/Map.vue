@@ -2,9 +2,7 @@
 <div>
 
   <vue-popup class="vue-popup" v-if="popupVisible" @closePopup="closePopup" @sendAuth="getAuthMessage"/>
-  
   <vue-popup-reg class="vue-popup" v-if="popupRegVisible" @closePopupReg="closePopupReg"/>
-  <!-- <vue-popup-review class="vue-popup-review"  v-if="popupReviewVisible" @closePopupReview="closePopupReview"/> -->
 
  <div class="header">
        <div class="box">
@@ -12,15 +10,25 @@
                 <i class="fa fa-home"></i>
           CityPlay</router-link>
       </div>
-      <div class="box">
-
-           <a class="reg" @click="showPopup">
-                <i class="fa fa-user"></i>
-           Войти
-           </a>
-           <a class="reg" @click="showPopupReg">Регистрация</a>
-           <a class="reg" @click="logout">Выйти</a>
+      <div v-if="!authorization" class="wrap">
+        <div class="box">
+        <a class="reg" @click="showPopup">
+          <i class="fa fa-user"></i>
+          Войти
+        </a>
+        </div>
+        <div class="box">
+          <a class="reg" @click="showPopupReg">Регистрация</a>
+        </div>
       </div>
+      <div  v-if="authorization" class="box">
+        <a class="reg" @click="logout">
+             <i class="fa fa-user"></i>
+             Выйти
+           </a>
+      </div>  
+           
+      
     </div>
     <div class="map">
         <l-map   
@@ -32,50 +40,36 @@
         >
             <l-tile-layer :url="url"></l-tile-layer>
             <l-marker 
+            @mousedown="getReviews(marker.id)"
             v-for="marker in markerLatLng" 
             :key="marker.index"  
             :lat-lng="[marker.possitionY,marker.possitionX]" 
             @click="openPopUp(marker.possitionY,marker.possitionX)"
-            
             :icon="icon"
             >
                 <l-popup>
                   <div class="popup">
-                     <!-- <p>{{marker.id}}</p> -->
-                     <!-- <form name="getindex" class="unshow">
-                        <input type="text" :value="marker.id" name="index" id="index">
-                     </form> -->
-                     
-
                     <div v-if="marker.image">
-                      <!-- <a @click="showPopupImage"> -->
                         <img class="img-playground" :src="require('../../../public/images/' + marker.image)">
-                      <!-- </a> -->
-                      <!-- <vue-popup-image class="vue-popup-image" :marker_data="marker.image" v-if="popupImageVisible" @closePopupImage="closePopupImage"/> -->
                     </div>
                     <div v-else>
-                      <!-- <img class="img-playground" :src="require('../../../public/' + default)"> -->
+                      <img class="img-playground" src="../../ default-image.png">
                     </div>
-
                     <div class="rating">
-                      <star-rating class="stars" :increment="0.01" :fixed-points="2" :read-only="true" :star-size="20" :rating="rating"></star-rating>
+                      <star-rating class="stars" :increment="0.01" :fixed-points="2" :read-only="true" :star-size="20" :rating="marker.rating"></star-rating>
                     </div>
-
                     <div class="review separator">
-                      <h2>Отзывы</h2>
-
+                          <h2>Отзывы</h2>
                       <div class="reviews">
-                        <a @click.prevent="getReviews(marker.id)">Читать</a>
                         <div v-if="reviewlist.length">
-                          <div v-for="review in reviewlist" :key="review.index">
-                            <p>{{review.text}}</p>
+                          <div class="review-box" v-for="review in reviewlist" :key="review.index">
+                            <p class="review-text">{{review.text}}</p>
                           </div>
                         </div>
                         <div v-else>
                           <p>Здесь пока нет ни одного отзыва</p>
                         </div>
                       </div>
-
                       <div>
                         <a @click="showPopupReview" class="review-href">Оставить отзыв</a>
                         <vue-popup-review class="vue-popup-review" :index_data="marker.id" v-if="popupReviewVisible" @closePopupReview="closePopupReview"/>
@@ -129,26 +123,28 @@ export default {
         popupRegVisible: false,
         popupImageVisible: false,
         popupReviewVisible: false,
-        rating: 0,
         reviewlist: [],
         authorization: false,
     }
   },
 
    created() {
+    //  getting marker's x,y possition
     fetch('/maps')
       .then(response => response.json())
       .then(json => this.markerLatLng = JSON.parse(json.playgrounds));
     
-    // setInterval(async () => {
-    //   const f = await fetch('/checkauth');
-    //   const data = await f.json();
-    //   console.log(data);
-    //   authorization = data.message;
-    // }, 10000);
+    // checking authorization
+    setInterval(async () => {
+      const f = await fetch('/checkauth');
+      const data = await f.json();
+      this.authorization = data.message;
+    }, 600000);
+
    },
 
    methods: {
+     // leaflet methods
     zoomUpdated (zoom) {
       this.zoom = zoom;
     },
@@ -161,11 +157,14 @@ export default {
     openPopUp (latLng) {
        this.$refs.features.mapObject.openPopup(latLng);
     },
+    // methods for open/close popup
     showPopup(){
       this.popupVisible = true;
     },
     closePopup(){
-      this.popupVisible = false
+      this.popupVisible = false;
+      this.authorization = true;
+      console.log('auth_true');
     },
     showPopupReg(){
       this.popupRegVisible = true;
@@ -185,27 +184,20 @@ export default {
     closePopupReview(){
       this.popupReviewVisible = false
     },
+    // method for getting reviews for current marker
     getReviews(id){
-      console.log(id);
-      console.log('ok');
-       const data = {'index': id};
-       console.log(data);
-       const requestOptions = {
-                method: 'POST',
-                body: JSON.stringify(data)
-            };
-       fetch('/reviewlist', requestOptions)
-       .then(response => response.json())
-       .then(json => this.reviewlist = json.reviews);
+      const data = {'index': id};
+      fetch('/review/list?index=' + id)
+      .then(response => response.json())
+      .then(json => this.reviewlist = JSON.parse(json.reviews));
     },
-    getAuthMessage(){
-      this.authorization = true;
-      console.log('auth_true');
-    },
+    // method for logout
     logout(){
+      this.authorization = false;
       fetch('/logout')
-    }
+    },
   },
+
 
 }
 </script>
@@ -219,8 +211,14 @@ export default {
     .popup{
         text-align: center;
         padding: 10px 20px 10px 0;
-        height: 420px;
+        height: 450px;
         width: 300px;
+        position: relative;
+    }
+    .wrap{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
     }
     .box:hover{
         background-color: #fff;
@@ -290,25 +288,46 @@ export default {
       height: 2px;
       background-color: #ff9900
     }
+     .separator_thin::before{
+      content: "";
+      display: inline-block;
+      width: 280px;  
+      height: 1px;
+      background-color: #ff9900
+    }
+    .review-text{
+      margin: 0;
+      padding: 0;
+    }
     .reviews{
-      height: 100px;
+      height: 80px;
       display: flex;
       flex-direction: column;
       flex-wrap: nowrap;
       overflow-y: auto;
+      padding: 5px 0 20px 0;
+    }
+    .review-box{
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      background: #F5F5F5;
     }
     .review-href{
+      display: inline-block;
       text-align: center;
       text-decoration: none;
       color: #ff9900;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 15px;
       text-align: right;
       font-size: 0.8rem;
     }
     h2{
       margin-bottom: 10px;
       color: #1c1c1c;
+      cursor: pointer;
+      margin-bottom: 5;
     }
      .vue-popup-review{
       background: #fffafa;
