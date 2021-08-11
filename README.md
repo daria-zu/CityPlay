@@ -5,4 +5,4 @@ The project has the ability to create an account, view the objects of playground
 
 The project is an example of full-stack development. 
 
-Used: js(Vue2), php(Symfony).
+Used: js(Vue2), php(Symfony), MySQL.
